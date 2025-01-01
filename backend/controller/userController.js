@@ -13,6 +13,29 @@ const getToken = (id) => {
 //Routes for user login 
 const loginUser = async (req, res) => {
 
+    try {
+        const { email, password } = req.body;
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ success: false, message: "User not found" });
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+            const token = getToken(user._id);
+            res.json({
+                success: true,
+                token
+            })
+        } else {
+            return res.status(400).json({ success: false, message: "Incorrect password" });
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ success: false, message: error.message });
+
+    }
+
+
 }
 
 
@@ -22,15 +45,15 @@ const registerUser = async (req, res) => {
         const { name, email, password } = req.body;
         const exist = await userModel.findOne({ email });
         if (exist) {
-            return res.status(400).json({success: false, message: "User already exists" });
+            return res.status(400).json({ success: false, message: "User already exists" });
         }
-        if(!validator.isEmail(email)){
-            return res.status(400).json({success: false, message: "Invalid email" });
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ success: false, message: "Invalid email" });
         }
-        if(password.length < 6){
-            return res.status(400).json({success: false, message: "enter password more than 6 characters" });
+        if (password.length < 6) {
+            return res.status(400).json({ success: false, message: "enter password more than 6 characters" });
         }
-        
+
         //hash password
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
@@ -48,7 +71,7 @@ const registerUser = async (req, res) => {
         })
     } catch (error) {
         console.log(error)
-        res.status(500).json({success: false, message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 
 }
@@ -59,4 +82,4 @@ const adminLoginUser = async (req, res) => {
 }
 
 
-export {loginUser, registerUser, adminLoginUser};
+export { loginUser, registerUser, adminLoginUser };
