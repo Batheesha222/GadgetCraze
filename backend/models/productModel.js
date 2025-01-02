@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import productSchema from './productModel';
+
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: String,
+        type: Array,
         required: true
     },
     category: {
@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    countInStock: {
+    date: {
         type: Number,
         required: true
     }
