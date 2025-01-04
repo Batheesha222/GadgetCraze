@@ -78,7 +78,24 @@ const registerUser = async (req, res) => {
 
 //Routes for admin login 
 const adminLoginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            const token = jwt.sign({email , password}, process.env.JWT_SECRET, {
+                expiresIn: '30d'
+            })
+            res.json({
+                success: true,
+                token
+            })
+        } else {
+            res.status(400).json({ success: false, message: "Incorrect password" });
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ success: false, message: error.message });
 
+    }
 }
 
 
