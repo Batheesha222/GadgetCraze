@@ -7,7 +7,7 @@ const adminAuth = async (req, res, next) => {
             return res.status(401).json({ success: false, message: "Access denied" });
         }
         const token_decoded = jwt.verify(token, process.env.JWT_SECRET);
-        if (token_decoded !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD) {
+        if (token_decoded.email !== process.env.ADMIN_EMAIL ||token_decoded.password !== process.env.ADMIN_PASSWORD) {
             return res.status(401).json({ success: false, message: "Access denied" });
         }
         next();
